@@ -410,7 +410,10 @@
 
   <rect x="20" y="20" width="600" height="560" style="fill:black;stroke:red;stroke-width:5" />
 
-  <g transform="translate(640, 120)">
+  <g transform="translate(640, 180)">
+    <text x="70" y="-100" style="fill:orange;font-size:25px;font-weight:bold;text-anchor:middle">Health:</text>
+    <rect x="0" y="-90" width="140" height="35" style="fill:white" />
+    <text id="health" x="70" y="-64" style="fill:orange;font-size:25px;text-anchor:middle">0</text>
     <text x="70" y="0" style="fill:orange;font-size:25px;font-weight:bold;text-anchor:middle">Level:</text>
     <rect x="0" y="10" width="140" height="35" style="fill:white" />
     <text id="level" x="70" y="36" style="fill:orange;font-size:25px;text-anchor:middle">0</text>
@@ -501,7 +504,7 @@
 			<tspan x="30" dy="40"> mode, which is much harder!</tspan>
 		</text>
 		<text x="50" y="480" style="font-family:sans-serif; font-size: 20px; font-weight:bold; fill:#000; text-anchor: left">
-			Tsang Hao Fung 20037334
+			p.s. use 'c' to enter cheat mode.
 		</text>
 		<g onclick="top.prepare(false)" transform="translate(220,500)">
 		  <rect x="0" y="0" width="220" height="40"
@@ -536,6 +539,7 @@
 		</g>
     </g>
     <xhtml:audio id="bgmusic" src="bgmusic.wav" loop="loop" autoplay="autoplay"/>
+    <xhtml:audio id="r_sound" src="r.wav" begin="indefinite"/>
     <xhtml:audio id="die_sound" src="die.wav" begin="indefinite"/>
     <xhtml:audio id="lose_sound" src="lose.wav" begin="indefinite"/>
     <xhtml:audio id="shoot_sound" src="shoot.wav" begin="indefinite"/>

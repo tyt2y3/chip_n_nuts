@@ -186,13 +186,15 @@ var canShoot = true;                // A flag indicating whether the player can 
 var score = 0; // The score of the game
 var name = "";
 var moving_down = true;
-var bullet_left = 8;
+var bullet_left = 4;
 var level = 1;
 var remaining_time = 60;
 var cheatmode = false;
 var gamestarted = false;
 var isASV = (window.navigator.appName == "Adobe SVG Viewer");
 var isFF = (window.navigator.appName == "Netscape");
+var health = 5;
+var hit_rest = 0;
 
 //
 // The load function for the SVG document
@@ -241,8 +243,9 @@ function gamestart()
 	canShoot = true;
 	score = 0;
 	moving_down = true;
-	bullet_left = 8;
 	level = 1;
+	health = 5;
+	bullet_left = 4;
 	remaining_time = 60;
 	cheatmode = false;
 	gamestarted = true;
@@ -254,11 +257,13 @@ function gamestart()
 	clearchild("goodthings", true);
 	create_things();
 	svgdoc.getElementById("level").firstChild.data = level;
+	svgdoc.getElementById("health").firstChild.data = health;
+	svgdoc.getElementById("bullet_left").firstChild.data = bullet_left;
 }
 
 function create_things()
 {
-	var num_of_monsters = 6 + (level-1)*4;
+	var num_of_monsters = 2 + (level-1)*2;
 	for( var i=0; i<num_of_monsters; i++)
 		monsters[i] = new Monster(i==0);
 	
@@ -345,11 +350,9 @@ function keydown(evt) {
 			canShoot = false;
 			setTimeout("canShoot = true", SHOOT_INTERVAL);
 			bullet_left--;
+			svgdoc.getElementById("bullet_left").firstChild.data = bullet_left;
 		}
 	    break;
-	    
-	    
-	case "P".charCodeAt(0): score++; berak;
     }
 }
 
@@ -481,8 +484,9 @@ function gamePlay() {
     moveBullets();
     moveMonsters();
     svgdoc.getElementById("score").firstChild.data = score;
-    svgdoc.getElementById("bullet_left").firstChild.data = bullet_left;
+    svgdoc.getElementById("health").firstChild.data = health;
     collisionDetection();
+    hit_rest--;
 }
 
 //
@@ -656,7 +660,7 @@ function collisionDetection() {
         // For each monster check if it overlaps with the player
         // if yes, stop the game
         if( !cheatmode)
-            if (intersect(player.position, PLAYER_SIZE, monster, MONSTER_SIZE)) gameover();
+            if (intersect(player.position, PLAYER_SIZE, monster, MONSTER_SIZE)) hit_player();
 
         // Check whether a bullet hits a monster
         var bullets = svgdoc.getElementById("bullets");
@@ -676,7 +680,8 @@ function collisionDetection() {
         }
     }
     // check player collides monster's bullet
-    if (intersect(player.position, PLAYER_SIZE, monster_bullet, BULLET_SIZE)) gameover();
+    if (!cheatmode)
+    if (intersect(player.position, PLAYER_SIZE, monster_bullet, BULLET_SIZE)) hit_player();
     
     // collect goodthings
     var goodthings = svgdoc.getElementById("goodthings");
@@ -691,6 +696,20 @@ function collisionDetection() {
 	}
 }
 
+function hit_player()
+{
+	if( hit_rest<=0)
+	{
+		health--;
+		hit_rest = 10;
+		svgdoc.getElementById("health").firstChild.data = health;
+		if( health<=0)
+			gameover();
+		else
+			playsound('r_sound');
+	}
+}
+
 function nextlevel()
 {
 	level++;
@@ -699,9 +718,12 @@ function nextlevel()
 	clearchild("goodthings");
 	create_things();
     player = new Player();
-	bullet_left = 8;
+	health = 5;
+	bullet_left = 4+level*2;
 	score+= level*100 + remaining_time*zoom;
 	svgdoc.getElementById("level").firstChild.data = level;
+	svgdoc.getElementById("health").firstChild.data = health;
+	svgdoc.getElementById("bullet_left").firstChild.data = bullet_left;
 	remaining_time = 60;
 	playsound('verygood_sound');
 }
